@@ -1,22 +1,20 @@
 import GameCard from '@/components/GameCard'
 import Navbar from '@/components/Navbar'
-import { ExternalLink, Github, Twitter } from 'lucide-react'
-import Link from 'next/link'
 import { GameInfo } from '../types'
 import gameData from '../public/gameData.json'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'NotBlox - Play multiplayer games in your browser',
+    title: 'Blox - Play multiplayer games in your browser',
     description:
       'Play multiplayer games in your browser. Create your own games and share them with your friends.',
     openGraph: {
-      title: 'NotBlox - Play multiplayer games in your browser',
+      title: 'Blox - Play multiplayer games in your browser',
       description:
         'Play multiplayer games in your browser. Create your own games and share them with your friends.',
       images: ['/PreviewTestGame.webp'],
-      siteName: 'NotBlox Online',
+      siteName: 'Blox Online',
     },
     twitter: {
       card: 'summary_large_image',
@@ -46,29 +44,6 @@ export default async function Home() {
           ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 my-4">
-        <Link
-          href={'https://discord.gg/kPhgtj49U2'}
-          className="flex py-2 items-center justify-center   px-8   font-medium   border border-transparent rounded-md hover:bg-gray-100   md:text-lg md:px-10"
-        >
-          <ExternalLink className="mr-2" />
-          Project Discord
-        </Link>
-        <Link
-          href={'https://twitter.com/iErcan_'}
-          className="flex py-2 items-center justify-center  px-8   font-medium   border border-transparent rounded-md hover:bg-gray-100    md:text-lg md:px-10"
-        >
-          <Twitter className="mr-2" />
-          Twitter
-        </Link>
-        <Link
-          href={'https://github.com/iErcann/Notblox'}
-          className="flex py-2 items-center justify-center   px-8   font-medium  border border-transparent rounded-md hover:bg-gray-100   md:text-lg md:px-10"
-        >
-          <Github className="mr-2" />
-          Source Code
-        </Link>
-      </div>
     </div>
   )
 }
