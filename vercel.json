@@ -1,6 +1,6 @@
 {
-  "buildCommand": "pnpm run build-vercel",
-  "outputDirectory": "front/.next",
+  "buildCommand": "cd .. && pnpm run build:shared && cd front && pnpm run build",
+  "outputDirectory": ".next",
   "installCommand": "pnpm install",
   "framework": "nextjs"
 }
