@@ -1,0 +1,7 @@
+{
+  "buildCommand": "pnpm run build-vercel",
+  "outputDirectory": "front/.next",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "rootDirectory": "."
+}
