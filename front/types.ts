@@ -3,6 +3,7 @@ export interface GameInfo {
   slug: string
   imageUrl: string
   websocketPort: number
+  websocketUrl?: string
   images?: { url: string; width: number; height: number; alt: string; type: string }[]
   metaDescription: string
   markdown: string

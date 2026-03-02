@@ -19,15 +19,20 @@ export class WebSocketManager {
   private serverUrl: string
 
   timeSinceLastServerUpdate: number = 0
-  constructor(game: Game, port?: number) {
-    // Set the serverUrl based on the environment
-    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? 'ws://localhost'
-    // In production (wss://), don't append port - cloud providers handle routing via URL
-    // In development (ws://), append port for local multi-server setup
-    if (baseUrl.startsWith('wss://')) {
-      this.serverUrl = baseUrl
+  constructor(game: Game, websocketUrl?: string, port?: number) {
+    // If full websocketUrl is provided (production with specific game server), use it directly
+    if (websocketUrl) {
+      this.serverUrl = websocketUrl
     } else {
-      this.serverUrl = `${baseUrl}:${port ?? 8001}`
+      // Fallback to env-based URL construction (development or single-server production)
+      const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? 'ws://localhost'
+      // In production (wss://), don't append port - cloud providers handle routing via URL
+      // In development (ws://), append port for local multi-server setup
+      if (baseUrl.startsWith('wss://')) {
+        this.serverUrl = baseUrl
+      } else {
+        this.serverUrl = `${baseUrl}:${port ?? 8001}`
+      }
     }
 
     this.addMessageHandler(ServerMessageType.FIRST_CONNECTION, (message) => {
