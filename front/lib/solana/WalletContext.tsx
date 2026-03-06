@@ -45,8 +45,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       setWallet(w)
       updateWalletInStats(w.publicKey)
       setPlayerStats(getPlayerStats())
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Connection failed')
     } finally {
       setIsConnecting(false)
     }

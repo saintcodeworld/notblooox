@@ -5,7 +5,7 @@ import { useWallet } from '@/lib/solana/WalletContext'
 import { shortenAddress } from '@/lib/solana/wallet'
 
 export default function WalletButton() {
-  const { wallet, isConnecting, error, hasWalletExtension, connect, disconnect } = useWallet()
+  const { wallet, isConnecting, hasWalletExtension, connect, disconnect } = useWallet()
   const [showDropdown, setShowDropdown] = useState(false)
 
   if (!hasWalletExtension) {

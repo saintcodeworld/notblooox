@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { popPendingReward, getPendingRewardCount, RewardDrop } from '@/lib/solana/quests'
+import { popPendingReward, RewardDrop } from '@/lib/solana/quests'
 
 export default function TokenRewardDrop() {
   const [activeReward, setActiveReward] = useState<RewardDrop | null>(null)

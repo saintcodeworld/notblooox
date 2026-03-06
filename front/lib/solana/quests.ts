@@ -174,7 +174,6 @@ export function getQuests(): Quest[] {
 }
 
 function initializeQuests(): Quest[] {
-  const now = Date.now()
   const endOfDay = getEndOfDay()
   const endOfWeek = getEndOfWeek()
 
@@ -204,7 +203,6 @@ function initializeQuests(): Quest[] {
 function checkAndResetQuests(): void {
   const lastDaily = localStorage.getItem(STORAGE_KEYS.LAST_DAILY_RESET)
   const lastWeekly = localStorage.getItem(STORAGE_KEYS.LAST_WEEKLY_RESET)
-  const now = Date.now()
   const today = new Date().toDateString()
   const currentWeek = getWeekNumber()
 
@@ -528,9 +526,7 @@ export function verifyActionToken(token: ValidationToken): boolean {
   const now = Date.now()
   // Token must be less than 5 minutes old
   if (now - token.timestamp > 300000) return false
-  // Re-generate and compare hash
-  const expected = generateActionToken(token.action)
-  // We can't compare directly since nonce differs, but we verify structure
+  // Verify token structure is valid
   return token.hash.length > 0 && token.timestamp > 0 && token.action.length > 0
 }
 

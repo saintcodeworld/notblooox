@@ -19,12 +19,26 @@ export interface TransactionResult {
 const LAMPORTS_PER_SOL = 1_000_000_000
 const SOLANA_RPC = 'https://api.mainnet-beta.solana.com'
 
+interface WalletProvider {
+  isPhantom?: boolean
+  isSolflare?: boolean
+  connect(): Promise<{ publicKey: { toString(): string } }>
+  disconnect(): Promise<void>
+  signMessage(message: Uint8Array, encoding: string): Promise<{ signature: Uint8Array }>
+}
+
+interface WalletWindow extends Window {
+  phantom?: { solana?: WalletProvider }
+  solflare?: WalletProvider
+}
+
 // Get Phantom or Solflare provider from window
-function getProvider(): any {
+function getProvider(): { provider: WalletProvider; name: 'phantom' | 'solflare' } | null {
   if (typeof window === 'undefined') return null
-  const phantom = (window as any).phantom?.solana
+  const w = window as unknown as WalletWindow
+  const phantom = w.phantom?.solana
   if (phantom?.isPhantom) return { provider: phantom, name: 'phantom' as const }
-  const solflare = (window as any).solflare
+  const solflare = w.solflare
   if (solflare?.isSolflare) return { provider: solflare, name: 'solflare' as const }
   return null
 }
@@ -44,8 +58,8 @@ export async function connectWallet(): Promise<SolanaWallet> {
       connected: true,
       provider: result.name,
     }
-  } catch (err: any) {
-    throw new Error(err.message || 'Failed to connect wallet')
+  } catch (err: unknown) {
+    throw new Error(err instanceof Error ? err.message : 'Failed to connect wallet')
   }
 }
 
@@ -85,9 +99,6 @@ export async function signAndSendTransaction(
   try {
     // Create a simple transfer instruction via the provider
     const { provider } = result
-    const connection = {
-      rpcEndpoint: SOLANA_RPC,
-    }
 
     // For production, use @solana/web3.js Transaction objects
     // This is a simplified signing flow
@@ -105,8 +116,8 @@ export async function signAndSendTransaction(
       success: true,
       signature: Buffer.from(signature.signature).toString('hex'),
     }
-  } catch (err: any) {
-    return { success: false, error: err.message || 'Transaction failed' }
+  } catch (err: unknown) {
+    return { success: false, error: err instanceof Error ? err.message : 'Transaction failed' }
   }
 }
 
@@ -116,8 +127,6 @@ export function shortenAddress(address: string, chars = 4): string {
 
 export function isWalletAvailable(): boolean {
   if (typeof window === 'undefined') return false
-  return !!(
-    (window as any).phantom?.solana?.isPhantom ||
-    (window as any).solflare?.isSolflare
-  )
+  const w = window as unknown as WalletWindow
+  return !!(w.phantom?.solana?.isPhantom || w.solflare?.isSolflare)
 }

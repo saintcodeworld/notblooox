@@ -9,7 +9,6 @@ import gameData from '../public/gameData.json'
 import { MiniGameCard } from './GameCard'
 import Navbar from './Navbar'
 import { trackGamePlayed, trackPlayTime, getQuests, getPlayerStats } from '@/lib/solana/quests'
-import { useWallet } from '@/lib/solana/WalletContext'
 
 export default function GameContent({ gameInfo }: { gameInfo: GameInfo }) {
   const [isPlaying, setIsPlaying] = useState(false)
