@@ -8,6 +8,8 @@ import { GameInfo } from '@/types'
 import gameData from '../public/gameData.json'
 import { MiniGameCard } from './GameCard'
 import Navbar from './Navbar'
+import { trackGamePlayed, trackPlayTime, getQuests, getPlayerStats } from '@/lib/solana/quests'
+import { useWallet } from '@/lib/solana/WalletContext'
 
 export default function GameContent({ gameInfo }: { gameInfo: GameInfo }) {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -26,8 +28,18 @@ export default function GameContent({ gameInfo }: { gameInfo: GameInfo }) {
     if (playerName.trim()) {
       localStorage.setItem('playerName', playerName.trim())
     }
+    trackGamePlayed()
     setIsPlaying(true)
   }
+
+  // Track play time every 30 seconds while playing
+  useEffect(() => {
+    if (!isPlaying) return
+    const interval = setInterval(() => {
+      trackPlayTime(30)
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [isPlaying])
 
   return (
     <>
@@ -104,6 +116,9 @@ export default function GameContent({ gameInfo }: { gameInfo: GameInfo }) {
               </div>
             </div>
           </div>
+          {/* Earn-to-Play Solana Section */}
+          <EarnToPlayBanner />
+
           {/* Related Games */}
           <section className="w-full">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 px-4 sm:px-0">More Games</h2>
@@ -122,5 +137,101 @@ export default function GameContent({ gameInfo }: { gameInfo: GameInfo }) {
         </div>
       )}
     </>
+  )
+}
+
+function EarnToPlayBanner() {
+  const stats = getPlayerStats()
+  const quests = getQuests()
+  const activeQuests = quests.filter((q) => q.status === 'active' || q.status === 'completed')
+  const completedToday = quests.filter((q) => q.type === 'daily' && q.status === 'claimed').length
+
+  return (
+    <section className="w-full mb-8">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-900 via-indigo-900 to-violet-900 p-6 md:p-8 shadow-xl border border-purple-500/20">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-4 right-8 text-6xl">💎</div>
+          <div className="absolute bottom-4 left-12 text-4xl">⚡</div>
+          <div className="absolute top-1/2 right-1/3 text-3xl">🪙</div>
+        </div>
+
+        <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🎮</span>
+              <h2 className="text-2xl md:text-3xl font-black text-white">Earn SOL While You Play</h2>
+            </div>
+            <p className="text-purple-200/80 text-sm md:text-base max-w-lg">
+              Complete quests, climb the leaderboard, and earn <span className="text-yellow-400 font-bold">Solana (SOL)</span> rewards.
+              Connect your wallet and start earning crypto just by playing!
+            </p>
+            <div className="flex flex-wrap gap-4 pt-1">
+              <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-1.5">
+                <span className="text-yellow-400 font-bold text-sm">{stats.totalEarned.toFixed(4)} SOL</span>
+                <span className="text-white/40 text-xs">earned</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-1.5">
+                <span className="text-cyan-400 font-bold text-sm">Lv.{stats.level}</span>
+                <span className="text-white/40 text-xs">{stats.totalXP} XP</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-1.5">
+                <span className="text-green-400 font-bold text-sm">{completedToday}/4</span>
+                <span className="text-white/40 text-xs">daily quests</span>
+              </div>
+              {stats.dailyStreak > 0 && (
+                <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-1.5">
+                  <span className="text-orange-400 font-bold text-sm">🔥 {stats.dailyStreak}</span>
+                  <span className="text-white/40 text-xs">day streak</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-2 shrink-0">
+            <div className="text-center bg-black/30 rounded-xl px-6 py-4 border border-white/10">
+              <div className="text-xs text-white/40 uppercase tracking-wider mb-1">Active Quests</div>
+              <div className="text-3xl font-black text-white">{activeQuests.length}</div>
+              <div className="text-xs text-purple-300/60 mt-0.5">rewards waiting</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Active quest previews */}
+        {activeQuests.length > 0 && (
+          <div className="relative mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {activeQuests.slice(0, 4).map((quest) => (
+              <div
+                key={quest.id}
+                className={`rounded-xl p-3 border transition-all ${
+                  quest.status === 'completed'
+                    ? 'bg-green-500/10 border-green-500/30'
+                    : 'bg-white/5 border-white/10'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-lg">{quest.icon}</span>
+                  <span className="text-xs font-bold text-white truncate">{quest.title}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${
+                        quest.status === 'completed' ? 'bg-green-400' : 'bg-purple-400'
+                      }`}
+                      style={{ width: `${Math.min((quest.progress / quest.target) * 100, 100)}%` }}
+                    />
+                  </div>
+                  <span className="text-[10px] text-yellow-400 font-semibold">+{quest.rewardSOL} SOL</span>
+                </div>
+                {quest.status === 'completed' && (
+                  <div className="text-[10px] text-green-400 font-medium mt-1">Ready to claim in-game!</div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
   )
 }

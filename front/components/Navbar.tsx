@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import WalletButton from './solana/WalletButton'
 
 export default function Navbar() {
   return (
@@ -21,18 +22,23 @@ export default function Navbar() {
           </h2>
         </div>
 
-        {/* Social Icons (X/Twitter) */}
-        <div className="hidden md:flex space-x-4">
-          <a href="https://x.com/i/communities/2030002380419518556" target="_blank" rel="noopener noreferrer">
-            <svg 
-              className="h-6 w-6 text-gray-800 cursor-pointer hover:opacity-70 transition-opacity" 
-              viewBox="0 0 24 24" 
-              fill="currentColor"
-              aria-label="X (Twitter)"
-            >
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-            </svg>
-          </a>
+        <div className="flex items-center space-x-4">
+          {/* Solana Wallet */}
+          <WalletButton />
+
+          {/* Social Icons (X/Twitter) */}
+          <div className="hidden md:flex space-x-4">
+            <a href="https://x.com/i/communities/2030002380419518556" target="_blank" rel="noopener noreferrer">
+              <svg 
+                className="h-6 w-6 text-gray-800 cursor-pointer hover:opacity-70 transition-opacity" 
+                viewBox="0 0 24 24" 
+                fill="currentColor"
+                aria-label="X (Twitter)"
+              >
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     </section>

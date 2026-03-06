@@ -1,4 +1,5 @@
 import '@/styles/globals.css'
+import { WalletProvider } from '@/lib/solana/WalletContext'
 
 export default function RootLayout({
   // Layouts must accept a children prop.
@@ -10,7 +11,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-50">
-        <main>{children}</main>
+        <WalletProvider>
+          <main>{children}</main>
+        </WalletProvider>
       </body>
     </html>
   )

@@ -8,6 +8,9 @@ import { Maximize } from 'lucide-react'
 import { MicroGameCard } from './GameCard'
 import { GameInfo } from '@/types'
 import gameData from '../public/gameData.json'
+import SolanaHudPanel from './solana/SolanaHudPanel'
+import TokenRewardDrop from './solana/TokenRewardDrop'
+import { trackChatMessage } from '@/lib/solana/quests'
 
 export interface GameHudProps {
   messages: MessageComponent[]
@@ -125,6 +128,10 @@ export default function GameHud({
       className="fixed inset-0 bg-gray-800 bg-opacity-0 text-white p-4 z-50 pointer-events-none"
       ref={refContainer}
     >
+      {/* Solana Earn-to-Play HUD */}
+      <SolanaHudPanel />
+      <TokenRewardDrop />
+
       {/* Global Notifications */}
       <div className="fixed top-24 left-1/2 transform -translate-x-1/2 flex flex-col items-center space-y-2 pointer-events-none">
         {notifications.map((notification) => (
@@ -157,7 +164,7 @@ export default function GameHud({
         </div>
       </div>
 
-      <div className="absolute bottom-4 right-4 bg-black bg-opacity-20 rounded-xl p-4 z-50 hidden lg:flex flex-col w-[360px] pointer-events-auto space-y-2">
+      <div className="absolute bottom-4 left-4 bg-black bg-opacity-20 rounded-xl p-4 z-50 hidden lg:flex flex-col w-[360px] pointer-events-auto space-y-2">
         {/* Other games cards mini section */}
         <div className="grid grid-cols-4 gap-3">
           {gameData.slice(0, 4).map((game: GameInfo) => (
@@ -208,6 +215,7 @@ export default function GameHud({
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') {
               sendMessage(e.currentTarget.value)
+              trackChatMessage()
               e.currentTarget.value = ''
               e.currentTarget.blur() // Remove focus from the input
             }
