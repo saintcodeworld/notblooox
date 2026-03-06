@@ -342,7 +342,7 @@ export function getPlayerStats(): PlayerStats {
 function createDefaultStats(): PlayerStats {
   return {
     walletAddress: '',
-    playerName: localStorage?.getItem('playerName') || 'Anonymous',
+    playerName: (typeof window !== 'undefined' ? localStorage.getItem('playerName') : null) || 'Anonymous',
     totalEarned: 0,
     totalXP: 0,
     level: 1,
