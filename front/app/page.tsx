@@ -6,15 +6,15 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Blox - Play multiplayer games in your browser',
+    title: 'NotBlox - Play multiplayer games in your browser',
     description:
       'Play multiplayer games in your browser. Create your own games and share them with your friends.',
     openGraph: {
-      title: 'Blox - Play multiplayer games in your browser',
+      title: 'NotBlox - Play multiplayer games in your browser',
       description:
         'Play multiplayer games in your browser. Create your own games and share them with your friends.',
       images: ['/PreviewTestGame.webp'],
-      siteName: 'Blox Online',
+      siteName: 'NotBlox.fun',
     },
     twitter: {
       card: 'summary_large_image',

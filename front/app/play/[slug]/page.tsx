@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       title: `Play ${gameInfo.title} - NotBlox`,
       description: gameInfo.metaDescription,
       images: gameInfo.images ?? [],
-      siteName: 'NotBlox Online',
+      siteName: 'NotBlox.fun',
     },
     twitter: {
       card: 'summary_large_image',
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       creator: '@iercan_',
     },
     alternates: {
-      canonical: `https://www.notblox.online/play/${gameInfo.slug}`,
+      canonical: `https://www.notblox.fun/play/${gameInfo.slug}`,
     },
   }
 }
